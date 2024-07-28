@@ -1,17 +1,16 @@
 #include "common/book.h"
-__global__ void add(int a, int b, int* c)
-{
-    *c = a + b;
-}
 
-int main(void)
+int main( void ) 
 {
-    int c;
-    int* dev_c;
-    cudaMalloc((void**) &dev_c, sizeof(int));
-    add<<<1, 1>>>(2, 3, dev_c);
-    cudaMemcpy(&c, &dev_c, sizeof(int), cudaMemcpyHostToDevice);
-    printf("2+3=%d\n", c);
-    cudaFree(dev_c);
-    return(0);
+    cudaDeviceProp prop;
+    int dev;
+
+    HANDLE_ERROR(cudaGetDevice(&dev));
+    printf("Id of current device: %d\n", dev);
+    memset(&prop, 0, sizeof(cudaDeviceProp));
+    prop.major = 1;
+    prop.minor = 0;
+    cudaChooseDevice(&dev, &prop);
+    printf("choosen device id: %d\n", dev);
+    cudaSetDevice(dev);
 }
